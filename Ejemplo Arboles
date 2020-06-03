@@ -1,0 +1,93 @@
+#include <iostream>
+#include <stdlib.h>
+
+using namespace std;
+
+//definimos la estructura del nodo
+struct nodo{  int valor;
+              struct nodo *izq;
+              struct nodo *der;
+              };
+typedef struct nodo * ABB;
+
+
+//prototipos de funciones
+void inserta(ABB &, int);
+void verArbol(ABB, int);
+int busquedaRec(ABB, int);
+int busquedaIter(ABB, int);
+
+
+//funcion principal
+main()
+{   ABB arbol=NULL;     // inicializa árbol
+    int opc, n;
+    do
+    {  cout<<endl<<"*** Menu ***"<<endl;
+       cout<<"1. Insertar"<<endl;
+       cout<<"2. Búsqueda recursiva"<<endl;
+       cout<<"3. Búsqueda iterativa"<<endl;
+       cout<<"4. Ver árbol"<<endl;
+       cout<<"5. Salir"<<endl;
+       cout <<"Ingrese opción:";
+       cin>>opc;
+       switch(opc)
+      {  case 1: cout <<"Valor a insertar: "; cin>>n;
+                 inserta(arbol, n);
+                 break;
+         case 2: cout <<"Valor a buscar recursivamente: "; cin>>n;
+                 if(busquedaRec(arbol, n)==1)
+                      cout<<"Elemento encontrado";
+                 else cout<<"Elemento no encontrado";
+                 break;
+         case 3: cout <<"Valor a buscar iterativamente: "; cin>>n;
+                 if(busquedaIter(arbol, n)==1)
+                      cout<<"Elemento encontrado";
+                 else cout<<"Elemento no encontrado";
+                 break;
+         case 4: verArbol(arbol, 0); // imprime arbol
+                     break;
+    } // fin de switch
+  }while(opc!=5);
+}  // fin de main( )
+
+
+//Funcion de insercion
+void inserta(ABB &arbol, int n)
+{  if (arbol==NULL)
+       {  arbol = new (struct nodo);
+          arbol->valor = n;
+          arbol->izq = NULL;
+          arbol->der = NULL;
+        }
+   else if (n<arbol->valor) inserta(arbol->izq, n);
+   else if (n>arbol->valor) inserta(arbol->der, n);
+}
+void verArbol(ABB arbol, int nro)
+{  int i;
+   if (arbol==NULL) return;
+   verArbol(arbol->der, nro+1);
+   for (i=0; i<nro; i++) cout <<" ";
+   cout <<arbol->valor<<endl;
+   verArbol(arbol->izq, nro+1);
+}
+
+int busquedaRec(ABB arbol, int dato)
+{ int r=0;     // 0 indica no lo encontré
+   if (arbol==NULL) return r;   // no lo encontré
+   if (dato < arbol->valor )
+        r=busquedaRec(arbol->izq, dato);
+   else if (dato > arbol->valor )
+               r=busquedaRec(arbol->der, dato);
+   else r=1;   //son iguales lo encontré
+   return r;
+}
+
+int busquedaIter(ABB arbol, int dato)
+{ while(arbol!=NULL)
+    { if (dato<arbol->valor)   arbol=arbol->izq;
+    else if (dato>arbol->valor) arbol=arbol->der;
+       else return 1; // lo encontré
+     }
+  return 0;            // no lo encontré
+}
